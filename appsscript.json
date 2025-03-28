@@ -1,0 +1,7 @@
+{
+  "timeZone": "Europe/Zurich",
+  "oauthScopes": ["https://www.googleapis.com/auth/script.external_request", "https://www.googleapis.com/auth/tagmanager.readonly",
+  "https://www.googleapis.com/auth/spreadsheets"
+  ],
+  "runtimeVersion": "V8"
+}
