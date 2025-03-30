@@ -1,29 +1,42 @@
-# GTM API to Google Sheets
+GTM API to Google Sheets
 
-This project uses Google Apps Script to connect with the Google Tag Manager API and export container data directly into Google Sheets.
+This project uses Google Apps Script to connect with the Google Tag Manager (GTM) API and export container and workspace data directly into Google Sheets.
 
-## What it does
+What it does
 
-- Authenticates using OAuth2
-- Connects to GTM API and fetches container info
-- Can write the container data into a Google Sheet
-- Useful for digital analysts and marketers managing multiple containers
+- Authenticates using OAuth2 via ScriptApp
+- Connects to the GTM API to fetch:
+  - Container metadata
+  - Workspace names and IDs
+- Writes results into a connected Google Sheet
+- Serves as a foundation for building an advanced tag validation tool
+- Useful for digital analysts and marketers managing GTM at scale
 
-## Tech Used
+Tech Used
 
 - Google Apps Script
 - GTM API v2
 - Google Sheets
+- OAuth Scopes (configured in `appsscript.json`)
 
-## Files
+ Files
 
-- `Code.gs`: The main script that connects to GTM and fetches container data
-- `appsscript.json`: Script manifest containing scopes and metadata
+- `Code.gs`: Contains the logic for fetching container and workspace data
+- `appsscript.json`: Defines required scopes and script configuration
+- `README.md`: Project documentation and status
 
-## Author
+ Next Steps
 
-Made by [Hisham Ghanayem](https://www.linkedin.com/in/hishamghanayem)
+- Fetch and display triggers from selected GTM workspaces
+- Build selector for choosing a container and workspace
+- Start building a UI for the Google Sheets Add-on
+- Future scope: Chrome Extension or SaaS for event tracking and validation
+
+Author
+
+Made by [Hisham Ghanayem](https://www.linkedin.com/in/hishamghanayem)  
+Website: [hishamghanayem.com](https://hishamghanayem.com)
 
 ---
 
-Feel free to fork, star, or suggest improvements.
+Feel free to fork, contribute, or share feedback.
