@@ -53,7 +53,49 @@ function getGTMTriggers() {
         sheet.appendRow([wp.name, "No triggers found", "", ""]);
       }
     });
+
+
+// Create a new sheet for all tags 
+  const tagsheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Tags") || SpreadsheetApp.getActiveSpreadsheet().insertSheet("Tags");
+  tagsheet.clearContents();
+  tagsheet.appendRow(["Path", "Tag ID","Tag Name", "Firing Rule ID", "Set up Tag", "Paused Status","Monitoring Meta Data","Consent Settings" 
+  ]);
+
+  if(workspaces && workspaces.length > 0)
+
+  workspaces.forEach(wp => {
+    const workspaceId = wp.workspaceId;
+    const tagsURL = "https://tagmanager.googleapis.com/tagmanager/v2/accounts/"+accountId+"/containers/"+containerId+"/workspaces/"+workspaceId+"/tags"
+
+    const tagResponse = UrlFetchApp.fetch(tagsURL, {
+        method: 'get',
+        headers: {
+          Authorization: 'Bearer ' + accessToken
+        },
+        muteHttpExceptions: true
+      });
+   
+      
+    const tagJson = JSON.parse(tagResponse.getContentText());
+      if (tagJson.tag && tagJson.tag.length > 0) {
+        tagJson.tag.forEach(tag => {
+    
+          tagsheet.appendRow([
+            tag.path,
+            tag.tagId,
+            tag.name,
+            tag.setupTag,
+            tag.paused, 
+            tag.monitoringMetadata,
+            tag.consentSettings
+            
+          ]);
+        });
+      } else {
+        tagsheet.appendRow([wp.name, "No Tags found", "", ""]);
+      }
+    });
   } else {
-    sheet.appendRow(["No workspaces found"]);
+    tagsheet.appendRow(["No workspaces found"]);
   }
 }
