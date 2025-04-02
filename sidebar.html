@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+  </head>
+  <body>
+    <h3>Fetch GTM Data</h3>
+
+    <!-- Account Dropdown -->
+    <select name="Account Name" id="Account-Id" onchange="loadContainers(this.value)">
+      <option value="" disabled selected>Select Your Account Name</option>
+    </select>
+
+    <!-- Container Dropdown -->
+    <select name="Container Name" id="Container-Id">
+      <option value="" disabled selected>Select Your Container Name</option>
+    </select>
+
+    <!-- Fetch Button -->
+    <button onclick="fetchData()">Fetch Triggers & Tags</button>
+
+    <script>
+      // 1️⃣ Fetch Accounts on Load
+      window.onload = function() {
+        google.script.run.withSuccessHandler(populateAccounts).getAccounts();
+      };
+
+      // 2️⃣ Populate Account Dropdown
+      function populateAccounts(accounts) {
+        const dropdown = document.getElementById("Account-Id");
+        accounts.forEach(account => {
+          const option = document.createElement("option");
+          option.value = account.accountId;
+          option.textContent = `${account.name} (${account.accountId})`;
+          dropdown.appendChild(option);
+        });
+      }
+
+      // 3️⃣ Load Containers Based on Selected Account
+      function loadContainers(accountId) {
+        google.script.run.withSuccessHandler(populateContainers).getContainers(accountId);
+      }
+
+      // 4️⃣ Populate Container Dropdown
+      function populateContainers(containers) {
+        const dropdown = document.getElementById("Container-Id");
+        dropdown.innerHTML = '<option value="" disabled selected>Select Your Container Name</option>'; // clear old ones
+        containers.forEach(container => {
+          const option = document.createElement("option");
+          option.value = container.containerId;
+          option.textContent = `${container.name} (${container.containerId})`;
+          dropdown.appendChild(option);
+        });
+      }
+
+      // 5️⃣ Trigger Final Fetch Function
+      function fetchData() {
+        google.script.run.getGTMTriggers();
+        alert("Fetching started… check your sheet in a few seconds.");
+      }
+    </script>
+  </body>
+</html>
