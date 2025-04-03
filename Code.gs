@@ -1,60 +1,57 @@
 function onOpen() {
   SpreadsheetApp.getUi()
-    .createMenu('Custom')
+    .createMenu('GTM API Call')
     .addItem('Open GTM Sidebar', 'startForm')
     .addToUi();
 }
 
 function startForm() {
   const html = HtmlService.createHtmlOutputFromFile('sidebar')
-    .setTitle('GTM Tools');
+    .setTitle('GTM API Tools');
   SpreadsheetApp.getUi().showSidebar(html);
 }
 
 function getAccounts() {
   const accessToken = ScriptApp.getOAuthToken();
-  const accountUrl = 'https://www.googleapis.com/tagmanager/v2/accounts';
-
-  const response = UrlFetchApp.fetch(accountUrl, {
+  const url = 'https://www.googleapis.com/tagmanager/v2/accounts';
+  const response = UrlFetchApp.fetch(url, {
     method: 'get',
     headers: { Authorization: 'Bearer ' + accessToken }
   });
-
   const json = JSON.parse(response.getContentText());
-  Logger.log(json);
-  Logger.log(json.account);
   return json.account || [];
 }
 
-
 function getContainers(accountId) {
   const accessToken = ScriptApp.getOAuthToken();
-  const containerUrl = `https://www.googleapis.com/tagmanager/v2/accounts/${accountId}/containers`;
-
-  const response = UrlFetchApp.fetch(containerUrl, {
+  const url = `https://www.googleapis.com/tagmanager/v2/accounts/${accountId}/containers`;
+  const response = UrlFetchApp.fetch(url, {
     method: 'get',
     headers: { Authorization: 'Bearer ' + accessToken }
   });
-
   const json = JSON.parse(response.getContentText());
-  Logger.log(json);
-  Logger.log(json.container);
   return json.container || [];
 }
 
-function getGTMTriggers() {
-  SpreadsheetApp.getActiveSpreadsheet().toast('Fetching GTM data...');
-
+function getWorkspace(accountId, containerId) {
   const accessToken = ScriptApp.getOAuthToken();
-  const accountId = '6220049883';
-  const containerId = '179091495';
+  const url = `https://www.googleapis.com/tagmanager/v2/accounts/${accountId}/containers/${containerId}/workspaces`;
+  const response = UrlFetchApp.fetch(url, {
+    method: 'get',
+    headers: { Authorization: 'Bearer ' + accessToken }
+  });
+  const json = JSON.parse(response.getContentText());
+  return json.workspace || [];
+}
 
+
+function getGTMTriggers(accountId, containerId, workspaceId) {
+  const accessToken = ScriptApp.getOAuthToken();
   const workspaceUrl = `https://www.googleapis.com/tagmanager/v2/accounts/${accountId}/containers/${containerId}/workspaces`;
   const response = UrlFetchApp.fetch(workspaceUrl, {
     method: 'get',
     headers: { Authorization: 'Bearer ' + accessToken }
   });
-
   const json = JSON.parse(response.getContentText());
   const workspaces = json.workspace;
   const triggerMap = {};
@@ -119,7 +116,5 @@ function getGTMTriggers() {
         });
       }
     });
-  } else {
-    Logger.log("No workspaces found");
   }
 }
